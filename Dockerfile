@@ -20,9 +20,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ─── Copy application source ───────────────────────────────────────────────────
 COPY . .
 
+# ─── Make entrypoint executable ───────────────────────────────────────────────
+RUN chmod +x entrypoint.sh
+
 # ─── Expose port ──────────────────────────────────────────────────────────────
 EXPOSE 8000
 
 # ─── Run server ───────────────────────────────────────────────────────────────
 # Railway provides PORT env variable, default to 8000 for local development
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
+ENTRYPOINT ["./entrypoint.sh"]
