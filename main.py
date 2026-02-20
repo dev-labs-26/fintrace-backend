@@ -25,13 +25,19 @@ app = FastAPI(
 )
 
 # ── CORS (allow the existing frontend dashboard to connect) ───────────────────
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+# For Railway + Vercel: Set ALLOWED_ORIGINS env var to your Vercel domain
+# Example: ALLOWED_ORIGINS=https://yourapp.vercel.app,https://yourapp-preview.vercel.app
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "*")
+allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # ── Register routes ───────────────────────────────────────────────────────────
